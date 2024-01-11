@@ -12,6 +12,7 @@ public class Weapon : NetworkBehaviour
     public float weaponLife = 3f;
     private float weaponTime;
     private AudioSource audioSource;
+    private GameObject bullet;
 
     // Start is called before the first frame update
     void Start()
@@ -19,33 +20,39 @@ public class Weapon : NetworkBehaviour
         weaponCooldownTime = 1f;
         audioSource = this.GetComponent<AudioSource>();
     }
-    public override void OnNetworkSpawn()
-    {
-        if (!IsOwner) Destroy(this);
-    }
 
     // Update is called once per frame
     void Update()
     {
+
+        if (!IsOwner) return;
+
         if (Input.GetKeyDown(KeyCode.Mouse0)) //Fire1 is mouse 1st click
         {
             if (Time.time > weaponTime && Time.timeScale != 0f)
             {
                 weaponTime = Time.time + this.weaponCooldownTime;
-                CmdShootRay();
+                RpcFireWeaponServerRpc();
             }
         }
     }
-    void CmdShootRay()
+    [ServerRpc]
+    void RpcFireWeaponServerRpc()
     {
-        RpcFireWeapon();
+        if (!IsOwner) return;
+
+        audioSource.Play();
+        bullet = Instantiate(this.weaponBullet, this.weaponFirePosition.position, this.weaponFirePosition.rotation);
+        bullet.GetComponent<NetworkObject>().Spawn(true);
+        bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * this.weaponSpeed;
+        StartCoroutine(DestroyObject(bullet));
     }
 
-    void RpcFireWeapon()
+    IEnumerator DestroyObject(GameObject bullet) 
     {
-        audioSource.Play();
-        GameObject bullet = Instantiate(this.weaponBullet, this.weaponFirePosition.position, this.weaponFirePosition.rotation);
-        bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * this.weaponSpeed;
-        Destroy(bullet, this.weaponLife);
+        yield return new WaitForSeconds(this.weaponLife);
+
+        bullet.GetComponent<NetworkObject>().Despawn(true);
+        Destroy(bullet);
     }
 }

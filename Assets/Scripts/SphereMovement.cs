@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class SphereMovement : MonoBehaviour
@@ -61,17 +62,25 @@ public class SphereMovement : MonoBehaviour
         if (onPlayerHitSphere != null)
         {
             onPlayerHitSphere(id);
-            this.gameObject.SetActive(false);
+
+            DespawnSpherClientRpc();
 
             int number = random.Next(0, waypoints.Length);
             this.gameObject.transform.position = waypoints[number].transform.position;
 
-            Invoke("SpawnSphere", SpawnInterval);
+            Invoke("SpawnSphereClientRpc", SpawnInterval);
         }
     }
 
-    private void SpawnSphere() 
+    [ClientRpc]
+    void DespawnSpherClientRpc() 
+    {
+        this.gameObject.SetActive(false);
+    }
+    [ClientRpc]
+    private void SpawnSphereClientRpc() 
     {
         this.gameObject.SetActive(true);
+        this.GetComponent<NetworkObject>().gameObject.SetActive(true);
     }
 }

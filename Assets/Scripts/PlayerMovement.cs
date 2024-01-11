@@ -12,15 +12,13 @@ public class PlayerMovement : NetworkBehaviour
     {
         controller = GetComponent<CharacterController>();
     }
-    public override void OnNetworkSpawn()
-    {
-        if (!IsOwner) Destroy(this);
-    }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 movement = new Vector3(Input.GetAxis("Horizontal"),-9.8f, Input.GetAxis("Vertical"));
+        if (!IsOwner) return;
+        
+        Vector3 movement = new Vector3(Input.GetAxis("Horizontal"),-1f, Input.GetAxis("Vertical"));
 
         controller.Move(Time.deltaTime * movement *25);
     }
