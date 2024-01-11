@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Unity.Netcode;
 
 public class UIManager : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class UIManager : MonoBehaviour
             this.ActivateMenu();
         }
     }
-
+    
     public void Replay() 
     {
         Time.timeScale = 1f;

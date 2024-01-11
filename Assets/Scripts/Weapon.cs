@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class Weapon : MonoBehaviour
+public class Weapon : NetworkBehaviour
 {
     private float weaponCooldownTime;
     public GameObject weaponBullet;
@@ -17,6 +18,10 @@ public class Weapon : MonoBehaviour
     {
         weaponCooldownTime = 1f;
         audioSource = this.GetComponent<AudioSource>();
+    }
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner) Destroy(this);
     }
 
     // Update is called once per frame

@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     CharacterController controller;
 
@@ -10,6 +11,10 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
+    }
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner) Destroy(this);
     }
 
     // Update is called once per frame
