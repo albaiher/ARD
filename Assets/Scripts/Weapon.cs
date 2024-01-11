@@ -24,7 +24,7 @@ public class Weapon : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0)) //Fire1 is mouse 1st click
         {
-            if (Time.time > weaponTime)
+            if (Time.time > weaponTime && Time.timeScale != 0f)
             {
                 weaponTime = Time.time + this.weaponCooldownTime;
                 CmdShootRay();
