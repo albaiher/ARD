@@ -1,17 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
-public class SphereMovement : MonoBehaviour
+public class SphereMovement : NetworkBehaviour
 {
     private float SpawnInterval = 2f;
     [SerializeField] 
     private GameObject[] waypoints;
     private int current = 0;
-
-    public Transform positionA;
-    public Transform positionB;
     public float velocidad = 8.0f; 
    
     private System.Random random = new System.Random();
@@ -48,9 +46,18 @@ public class SphereMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other.tag);
         if (other.tag.Equals("Player"))
         {
-            PlayerHitSphere(1);
+            Debug.Log(isLocalPlayer);
+            if (!isLocalPlayer)
+            {
+                PlayerHitSphere(2);
+            }
+            else 
+            {
+                PlayerHitSphere(1);
+            }
         }
     }
 
