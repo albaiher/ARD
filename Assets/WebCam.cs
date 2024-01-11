@@ -11,7 +11,7 @@ public class WebCam : MonoBehaviour
     void Start()
     {
         WebCamDevice[] devices = WebCamTexture.devices;
-
+        Debug.Log(devices.Length);
         if (devices.Length > 0) 
         {
             webCamTexture = new WebCamTexture(devices[0].name);
