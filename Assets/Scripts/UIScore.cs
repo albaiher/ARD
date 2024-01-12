@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode;
 
-public class UIScore : MonoBehaviour
+public class UIScore : NetworkBehaviour
 {
     public int playerID;
-    private int score = 0;
+    private NetworkVariable<int> score = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone);
     private Text UI;
 
-    public int Score { 
+    public NetworkVariable<int> Score { 
         get {return score;} 
         set {score = value;} 
     }
@@ -24,12 +25,15 @@ public class UIScore : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        UI.text = this.score.Value.ToString();
     }
 
     void PlayerHitSphere(int id) 
     {
-        this.score++;
-        UI.text = this.score.ToString();
+        if (id == this.playerID) 
+        { 
+            this.score.Value++;
+        }
+        
     }
 }

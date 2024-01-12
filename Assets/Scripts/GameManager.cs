@@ -7,9 +7,10 @@ public class GameManager : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    public UIScore playerScore;
+    public UIScore player1Score;
+    public UIScore player2Score;
     public UIManager uiManager;
-    private int scoreToWin = 3;
+    [SerializeField] private int scoreToWin = 3;
     private AudioSource winAudio;
     private bool win = false;
 
@@ -42,6 +43,6 @@ public class GameManager : MonoBehaviour
 
     private bool PlayerHasWon()
     {
-        return playerScore.Score >= scoreToWin;
+        return player1Score.Score.Value >= scoreToWin || player2Score.Score.Value >= scoreToWin;
     }
 }

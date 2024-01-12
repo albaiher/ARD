@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class SphereMovement : MonoBehaviour
+public class SphereMovement : NetworkBehaviour
 {
     private float SpawnInterval = 2f;
     [SerializeField] 
@@ -49,9 +49,11 @@ public class SphereMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!IsOwner) return;
+
         if (other.tag.Equals("Player"))
         {
-            PlayerHitSphere(1);
+            PlayerHitSphere(other.GetComponent<BulletManager>().playerID);
         }
     }
 
